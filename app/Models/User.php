@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -16,8 +18,9 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
+    protected $guarded = [
+        'firstname',
+        'lastname',
         'email',
         'password',
     ];
@@ -31,6 +34,61 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function ledgers(): HasMany
+    {
+        return $this->hasMany(Ledger::class);
+    }
+
+    public function withdrawals(): HasMany
+    {
+        return $this->hasMany(Withdrawal::class);
+    }
+
+    public function account(): HasOne
+    {
+        return $this->hasOne(Account::class);
+    }
+
+    public function profile(): HasOne
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    public function securities(): HasMany
+    {
+        return $this->hasMany(Security::class);
+    }
+
+    public function virtualAccount(): HasMany
+    {
+        return $this->hasMany(VirtualAccount::class);
+    }
+
+    public function deposits(): HasMany
+    {
+        return $this->hasMany(Deposit::class);
+    }
+
+    public function internalTransfers(): HasMany
+    {
+        return $this->hasMany(InternalTransfer::class, 'sender_id');
+    }
+
+    public function internalDeposits(): HasMany
+    {
+        return $this->hasMany(InternalTransfer::class, 'recipient_id');
+    }
+
+    public function paymentOptions(): HasMany
+    {
+        return $this->hasMany(PaymentOption::class);
+    }
+
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
 
     /**
      * Get the attributes that should be cast.
