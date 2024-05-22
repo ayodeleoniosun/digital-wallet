@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'paystack' => [
+        'host' => env('PAYSTACK_HOST'),
+        'public_key' => env('PAYSTACK_PUBLIC_KEY'),
+        'secret_key' => env('PAYSTACK_SECRET_KEY'),
+        'preferred_bank' => env('PAYSTACK_PREFERRED_BANK'),
+    ],
 ];
