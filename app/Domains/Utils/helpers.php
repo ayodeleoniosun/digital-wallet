@@ -3,6 +3,7 @@
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Str;
 
 function successResponse(
     string $message = '',
@@ -22,4 +23,9 @@ function errorResponse(string $message = '', int $statusCode = Response::HTTP_IN
         'status' => 'error',
         'message' => $message,
     ], $statusCode);
+}
+
+function uniquePrefix(): string
+{
+    return 'BUMPA_'.strtoupper(Str::random(10));
 }
