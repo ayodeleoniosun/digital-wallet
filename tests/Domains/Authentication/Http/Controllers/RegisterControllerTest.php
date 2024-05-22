@@ -59,6 +59,34 @@ it('cannot register user if password strength is weak', function () {
         ->and($response['message'])->toBe('The password field must contain at least one uppercase and one lowercase letter.');
 });
 
+it('cannot register user if phone already exist', function () {
+    $this->payload['password'] = 'Bumpa@2024';
+    $this->request->merge($this->payload);
+
+    $this->postJson('api/auth/register', $this->request->all())->json();
+    $response = $this->postJson('api/auth/register', $this->request->all())->json();
+
+    expect($response)->toBeArray()
+        ->and($response['status'])->toBe('error')
+        ->and($response['message'])->toBe('The phone has already been taken.');
+});
+
+it('cannot register user if email address already exist', function () {
+    $this->payload['password'] = 'Bumpa@2024';
+    $this->request->merge($this->payload);
+
+    $this->postJson('api/auth/register', $this->request->all())->json();
+
+    $this->payload['phone'] = '+2348123456781';
+    $this->request->merge($this->payload);
+
+    $response = $this->postJson('api/auth/register', $this->request->all())->json();
+
+    expect($response)->toBeArray()
+        ->and($response['status'])->toBe('error')
+        ->and($response['message'])->toBe('The email has already been taken.');
+});
+
 it('can register user if all fields are valid', function () {
     $this->payload['password'] = 'Bumpa@2024';
     $this->request->merge($this->payload);
