@@ -2,14 +2,17 @@
 
 namespace App\Domains\Authentication\Actions;
 
+use App\Domains\Utils\Enums\ActivityTypesEnum;
+use App\Domains\Utils\Traits\ActivityTrait;
 use App\Models\Profile;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CreateUser
 {
+    use ActivityTrait;
+
     private ?User $user = null;
 
     public function execute(Request $request): User
@@ -20,6 +23,7 @@ class CreateUser
                 'lastname' => $request->lastname,
                 'email' => strtolower($request->email),
                 'password' => bcrypt(hash('sha256', $request->password)),
+                'email_verified_at' => now(),
             ]);
 
             Profile::create([
@@ -29,7 +33,7 @@ class CreateUser
             ]);
         });
 
-        event(new Registered($this->user));
+        $this->setActivity(ActivityTypesEnum::REGISTER->value, $this->user);
 
         return $this->user->with('profile')->first();
     }

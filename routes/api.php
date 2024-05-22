@@ -1,10 +1,9 @@
 <?php
 
-use App\Domains\Authentication\Http\Controllers\RegisterController;
+use App\Domains\Authentication\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
-    Route::prefix('register')->group(function () {
-        Route::post('/', [RegisterController::class, 'create']);
-    });
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
 });
