@@ -40,6 +40,8 @@ class LoginUser
 
         $this->validateEmailVerified();
 
+        $this->createAccountIfNotExist();
+
         $this->user->tokens()->delete();
 
         $token = $this->user->createToken(Str::slug($this->user->firstname))->plainTextToken;
@@ -73,6 +75,15 @@ class LoginUser
     {
         if (!$this->user->email_verified_at) {
             throw new CustomException('Email not yet verified.', Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function createAccountIfNotExist(): void
+    {
+        $account = $this->user->account()->first();
+
+        if (!$account) {
+            $this->user->account()->create();
         }
     }
 }

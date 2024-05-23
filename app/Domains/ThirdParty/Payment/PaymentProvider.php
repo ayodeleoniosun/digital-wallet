@@ -20,4 +20,6 @@ abstract class PaymentProvider
     abstract public function createVirtualBankAccount(object $data): array;
 
     abstract public function initiateTransfer(object $data): object;
+
+    abstract public function verifyTransaction(string $reference): array;
 }

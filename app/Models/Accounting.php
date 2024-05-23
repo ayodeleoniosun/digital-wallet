@@ -2,19 +2,16 @@
 
 namespace App\Models;
 
-use App\Domains\Wallet\Deposit\Events\DepositCreated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Deposit extends Model
+class Accounting extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $guarded = ['id'];
-
-    protected $dispatchesEvents = ['created' => DepositCreated::class];
 
     public function user(): BelongsTo
     {

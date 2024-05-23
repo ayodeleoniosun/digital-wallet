@@ -19,7 +19,7 @@ beforeEach(function () {
     $this->actingAs($this->user);
 });
 
-it('should return virtual account details', function () {
+it('should generate virtual account details', function () {
     $response = $this->postJson('api/wallets/virtual-accounts');
     $data = $response->json();
 
@@ -51,5 +51,16 @@ it('should throw an error if virtual account details exist', function () {
         ->and($data)->toBeArray()
         ->and($data['status'])->toBe(StatusTypesEnum::ERROR->value)
         ->and($data['message'])->toBe('Virtual account details already generated');
+});
 
+it('should retrieve virtual account details', function () {
+    $response = $this->getJson('api/wallets/virtual-accounts');
+    $data = $response->json();
+
+    expect($response->status())->toBe(Response::HTTP_OK)
+        ->and($data)->toBeArray()
+        ->and($data['status'])->toBe(StatusTypesEnum::SUCCESS->value)
+        ->and($data['message'])->toBe('Virtual account details successfully retrieved')
+        ->and(count($data['data']))->toBeGreaterThan(0)
+        ->and($data['data'])->each(fn($item) => $item->user_id->toBe($this->user->id));
 });

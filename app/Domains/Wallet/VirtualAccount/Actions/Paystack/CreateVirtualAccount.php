@@ -31,6 +31,10 @@ class CreateVirtualAccount implements VirtualAccountInterface
 
         $account = (new Paystack())->createVirtualBankAccount($data);
 
+        if (!$account['status']) {
+            throw new CustomException($account['message']);
+        }
+
         $this->user->virtualAccounts()->create([
             'bank_name' => $account['data']['bank']['name'],
             'account_name' => $account['data']['account_name'],

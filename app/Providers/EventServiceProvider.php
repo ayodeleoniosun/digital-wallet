@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Domains\Wallet\Deposit\Events\DepositCreated;
+use App\Domains\Wallet\Deposit\Listeners\DepositListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -12,7 +14,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-
+        DepositCreated::class => [
+            DepositListener::class,
+        ],
     ];
 
     /**

@@ -5,6 +5,7 @@ namespace App\Domains\Authentication\Http\Controllers;
 use App\Domains\Authentication\Actions\CreateUser;
 use App\Domains\Authentication\Actions\LoginUser;
 use App\Domains\Authentication\Http\Requests\RegisterRequest;
+use App\Domains\Utils\Exceptions\CustomException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -24,6 +25,9 @@ class AuthController
         return successResponse('Registration successful', Response::HTTP_CREATED, $response);
     }
 
+    /**
+     * @throws CustomException
+     */
     public function login(Request $request): JsonResponse
     {
         $response = $this->loginUser->execute($request);

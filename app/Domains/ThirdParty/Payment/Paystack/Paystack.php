@@ -103,6 +103,24 @@ class Paystack extends PaymentProvider
     /**
      * @throws CustomException
      */
+    public function charge(object $data): object
+    {
+        try {
+            return $this->http()->post('/charge', [
+                'email' => $data->email,
+                'amount' => $data->amount,
+                'bank_transfer' => [
+                    'account_expires_at' => now()->addDays(2),
+                ],
+            ])->json();
+        } catch (Exception $e) {
+            throw new CustomException($e->getMessage());
+        }
+    }
+
+    /**
+     * @throws CustomException
+     */
     public function finalizeTransfer(object $data): object
     {
         try {
@@ -110,6 +128,18 @@ class Paystack extends PaymentProvider
                 'transfer_code' => $data->transfer_code,
                 'otp' => $data->otp,
             ])->json();
+        } catch (Exception $e) {
+            throw new CustomException($e->getMessage());
+        }
+    }
+
+    /**
+     * @throws CustomException
+     */
+    public function verifyTransaction(string $reference): array
+    {
+        try {
+            return $this->http()->get('/transaction/verify/'.$reference)->json();
         } catch (Exception $e) {
             throw new CustomException($e->getMessage());
         }

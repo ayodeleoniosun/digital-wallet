@@ -10,9 +10,13 @@
     "require": {
         "php": "^8.2",
         "jenssegers/agent": "^2.6",
+        "kdabrow/seeder-once": "^5.0",
         "laravel/framework": "^11.0",
+        "laravel/horizon": "^5.24",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "opcodesio/log-viewer": "^3.10",
+        "predis/predis": "^2.0",
         "stevebauman/location": "^7.2"
     },
     "require-dev": {
