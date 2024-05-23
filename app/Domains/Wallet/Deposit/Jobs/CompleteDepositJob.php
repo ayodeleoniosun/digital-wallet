@@ -62,7 +62,7 @@ class  CompleteDepositJob implements ShouldBeUnique, ShouldQueue
             $deposit = $this->user->deposits()->create([
                 'amount' => $this->amount,
                 'reference' => $this->reference,
-                'type' => DepositTypesEnum::INTERNAL->value,
+                'type' => DepositTypesEnum::EXTERNAL->value,
             ]);
 
             $this->user->accountings()->create([

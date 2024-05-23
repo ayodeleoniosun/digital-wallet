@@ -3,13 +3,12 @@
 use App\Domains\Utils\Enums\StatusTypesEnum;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
 function success(
     string $message = '',
     int $statusCode = Response::HTTP_OK,
-    array|LengthAwarePaginator $data = [],
+    $data = [],
 ): JsonResponse {
     return response()->json([
         'status' => StatusTypesEnum::SUCCESS->value,

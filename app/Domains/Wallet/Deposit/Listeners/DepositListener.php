@@ -28,8 +28,8 @@ class DepositListener implements ShouldBeUnique
      */
     public function handle(DepositCreated $event): void
     {
-        $this->deposit = $event->deposit;
+        $deposit = $event->deposit;
 
-        Mail::to($this->deposit->user)->queue(new SendDepositMail($this->deposit));
+        Mail::to($deposit->user)->queue(new SendDepositMail($deposit));
     }
 }
