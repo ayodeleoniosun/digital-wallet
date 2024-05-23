@@ -34,11 +34,13 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
-    'paystack' => [
-        'host' => env('PAYSTACK_HOST'),
-        'public_key' => env('PAYSTACK_PUBLIC_KEY'),
-        'secret_key' => env('PAYSTACK_SECRET_KEY'),
-        'preferred_bank' => env('PAYSTACK_PREFERRED_BANK'),
+    'payment' => [
+        'provider' => env('PAYMENT_PROVIDER'),
+        'paystack' => [
+            'host' => env('PAYSTACK_HOST'),
+            'public_key' => env('PAYSTACK_PUBLIC_KEY'),
+            'secret_key' => env('PAYSTACK_SECRET_KEY'),
+            'preferred_bank' => env('PAYSTACK_PREFERRED_BANK'),
+        ],
     ],
 ];

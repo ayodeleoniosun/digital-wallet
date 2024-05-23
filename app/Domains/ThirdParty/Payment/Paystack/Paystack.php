@@ -34,14 +34,14 @@ class Paystack extends PaymentProvider
     /**
      * @throws CustomException
      */
-    public function createCustomer(object $data): object
+    public function createVirtualBankAccount(object $data): array
     {
         try {
-            return $this->http()->post('/customer', [
-                'email' => $data->email,
-                'first_name' => $data->first_name,
-                'last_name' => $data->last_name,
-                'phone' => $data->phone,
+            $customer = $this->createCustomer($data);
+
+            return $this->http()->post('/dedicated_account', [
+                'customer' => $customer['data']['customer_code'],
+                'preferred_bank' => config('services.payment.paystack.preferred_bank'),
             ])->json();
         } catch (Exception $e) {
             throw new CustomException($e->getMessage());
@@ -51,12 +51,14 @@ class Paystack extends PaymentProvider
     /**
      * @throws CustomException
      */
-    public function createVirtualBankAccount(object $data): object
+    public function createCustomer(object $data): array
     {
         try {
-            return $this->http()->post('/dedicated_account', [
-                'customer' => $data->customer,
-                'preferred_bank' => $data->preferred_bank,
+            return $this->http()->post('/customer', [
+                'email' => $data->email,
+                'first_name' => $data->firstname,
+                'last_name' => $data->lastname,
+                'phone' => $data->phone,
             ])->json();
         } catch (Exception $e) {
             throw new CustomException($e->getMessage());

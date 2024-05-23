@@ -6,16 +6,16 @@ class Config
 {
     public function baseUrl(): string
     {
-        return config('services.paystack.host');
+        return config('services.payment.paystack.host');
     }
 
     public function publicKey()
     {
-        return config('services.paystack.public_key');
+        return config('services.payment.paystack.public_key');
     }
 
     public function secretKey()
     {
-        return config('services.paystack.secret_key');
+        return config('services.payment.paystack.secret_key');
     }
 }
