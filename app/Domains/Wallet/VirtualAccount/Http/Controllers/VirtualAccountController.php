@@ -25,13 +25,13 @@ class VirtualAccountController
     {
         $response = $this->generateVirtualAccount->execute()->toArray();
 
-        return successResponse('Virtual account details successfully generated', Response::HTTP_CREATED, $response);
+        return success('Virtual account details successfully generated', Response::HTTP_CREATED, $response);
     }
 
     public function getAccount(Request $request): JsonResponse
     {
         $response = $this->getVirtualAccount->execute()->toArray();
 
-        return successResponse('Virtual account details successfully retrieved', Response::HTTP_OK, $response);
+        return success('Virtual account details successfully retrieved', Response::HTTP_OK, $response);
     }
 }

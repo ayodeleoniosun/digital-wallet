@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -66,6 +67,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(VirtualAccount::class);
     }
+
+    public function fullName(): Attribute
+    {
+        return new Attribute(
+            get: fn() => ucwords($this->firstname.' '.$this->lastname)
+        );
+    }
+
 
     public function deposits(): HasMany
     {

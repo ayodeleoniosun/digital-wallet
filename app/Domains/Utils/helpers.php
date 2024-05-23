@@ -6,7 +6,7 @@ use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
-function successResponse(
+function success(
     string $message = '',
     int $statusCode = Response::HTTP_OK,
     array|LengthAwarePaginator $data = [],

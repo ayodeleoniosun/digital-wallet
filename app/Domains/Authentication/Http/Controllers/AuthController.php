@@ -22,7 +22,7 @@ class AuthController
     {
         $response = $this->createUser->execute($request)->toArray();
 
-        return successResponse('Registration successful', Response::HTTP_CREATED, $response);
+        return success('Registration successful', Response::HTTP_CREATED, $response);
     }
 
     /**
@@ -32,7 +32,7 @@ class AuthController
     {
         $response = $this->loginUser->execute($request);
 
-        return successResponse('Login successful', Response::HTTP_OK, $response);
+        return success('Login successful', Response::HTTP_OK, $response);
     }
 
 }
