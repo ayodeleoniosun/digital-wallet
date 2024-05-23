@@ -44,7 +44,7 @@ class GenerateVirtualAccount
      */
     public function validateVirtualAccount(): ?VirtualAccount
     {
-        $account = $this->user->virtualAccount()
+        $account = $this->user->virtualAccounts()
             ->where('provider', $this->selectedProvider)
             ->whereNull('deleted_at')
             ->first();

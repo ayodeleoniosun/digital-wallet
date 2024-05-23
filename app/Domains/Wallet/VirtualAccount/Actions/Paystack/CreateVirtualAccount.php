@@ -31,7 +31,7 @@ class CreateVirtualAccount implements VirtualAccountInterface
 
         $account = (new Paystack())->createVirtualBankAccount($data);
 
-        $this->user->virtualAccount()->create([
+        $this->user->virtualAccounts()->create([
             'bank_name' => $account['data']['bank']['name'],
             'account_name' => $account['data']['account_name'],
             'account_number' => $account['data']['account_number'],
@@ -41,6 +41,6 @@ class CreateVirtualAccount implements VirtualAccountInterface
 
         $this->setActivity(ActivityTypesEnum::CREATE_VIRTUAL_ACCOUNT->value, $this->user);
 
-        return $this->user->with('virtualAccount')->first();
+        return $this->user->with('virtualAccounts')->first();
     }
 }

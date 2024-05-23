@@ -57,7 +57,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Security::class);
     }
 
-    public function virtualAccount(): HasMany
+    public function virtualAccounts(): HasMany
     {
         return $this->hasMany(VirtualAccount::class);
     }

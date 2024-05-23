@@ -30,7 +30,7 @@ class VirtualAccountController
 
     public function getAccount(Request $request): JsonResponse
     {
-        $response = $this->getVirtualAccount->execute($request);
+        $response = $this->getVirtualAccount->execute()->toArray();
 
         return successResponse('Virtual account details successfully retrieved', Response::HTTP_OK, $response);
     }
