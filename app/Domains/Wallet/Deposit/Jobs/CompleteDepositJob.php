@@ -2,9 +2,11 @@
 
 namespace App\Domains\Wallet\Deposit\Jobs;
 
+use App\Domains\Utils\Enums\ActivityTypesEnum;
 use App\Domains\Utils\Enums\DepositTypesEnum;
 use App\Domains\Utils\Enums\TransactionStatusEnum;
 use App\Domains\Utils\Enums\TransactionTypesEnum;
+use App\Domains\Utils\Exceptions\CustomException;
 use App\Domains\Utils\Traits\ActivityTrait;
 use App\Models\Deposit;
 use App\Models\User;
@@ -43,9 +45,13 @@ class  CompleteDepositJob implements ShouldBeUnique, ShouldQueue
 
     /**
      * Execute the job.
+     *
+     * @throws CustomException
      */
     public function handle(): void
     {
+        $this->validateDuplicateDeposit();
+
         DB::transaction(function () use (&$deposit) {
             $previousBalance = $this->user->account->balance;
 
@@ -81,6 +87,32 @@ class  CompleteDepositJob implements ShouldBeUnique, ShouldQueue
             'user_id' => $this->user->id,
         ]);
 
-        $this->setActivity('deposit-completed', $this->user, false);
+        $this->setActivity(ActivityTypesEnum::DEPOSIT_COMPLETED->value, $this->user, false);
+    }
+
+    /**
+     * @throws CustomException
+     */
+    public function validateDuplicateDeposit(): bool
+    {
+        $depositExistInRedis = Redis::get($this->uniqueId);
+
+        $deposit = $this->user->deposits()
+            ->where('reference', $this->reference)
+            ->where('type', DepositTypesEnum::INTERNAL->value)
+            ->first();
+
+        if ($deposit || !empty($depositExistInRedis)) {
+            Log::warning("Deposit already completed => ", [
+                'reference' => $this->reference,
+                'user_id' => $this->user->id,
+            ]);
+
+            $this->setActivity(ActivityTypesEnum::DEPOSIT_ALREADY_EXIST->value, $this->user, false);
+
+            throw new CustomException("Deposit already completed");
+        }
+
+        return true;
     }
 }
