@@ -7,8 +7,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Redis;
-use Mockery;
 use Tests\Domains\Wallet\Examples;
 
 beforeEach(function () {
@@ -31,8 +29,6 @@ beforeEach(function () {
     Http::fake([
         'https://api.paystack.co/transaction/verify/'.$this->invalidReference => Http::response(Examples::invalidTransactionReference()),
     ]);
-
-    $this->mock = Mockery::mock('overload:'.Redis::class)->makePartial();
 });
 
 it('should throw an error if user does not exist while processing deposit webhook event', function () {
@@ -71,7 +67,8 @@ it('should throw an error if the deposit reference is invalid', function () {
 });
 
 it('should credit user account if he has not been previously credited', function () {
-    $this->request->merge(Examples::depositWebhookEvent('success', $this->user->email));
+    $webhookEvent = Examples::depositWebhookEvent('success', $this->user->email);
+    $this->request->merge($webhookEvent);
 
     $response = $this->postJson('api/webhooks/deposit', $this->request->all());
     $data = $response->json();

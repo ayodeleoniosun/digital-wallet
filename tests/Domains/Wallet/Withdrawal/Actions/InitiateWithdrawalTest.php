@@ -65,6 +65,12 @@ it('should throw an error if amount exceeds daily limit', function () {
 
 })->throws(CustomException::class);
 
+it('should throw an error if double withdrawal is initiated', function () {
+    (new InitiateWithdrawal())->execute($this->request);
+
+    (new InitiateWithdrawal())->execute($this->request);
+})->throws(CustomException::class, 'Double withdrawal spotted. Try again in a minute time.');
+
 it('should complete withdrawal ', function () {
     $response = (new InitiateWithdrawal())->execute($this->request);
 

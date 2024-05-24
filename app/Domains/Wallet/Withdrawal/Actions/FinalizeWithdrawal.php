@@ -13,6 +13,7 @@ use App\Domains\Wallet\Withdrawal\Http\Resources\Withdrawal as WithdrawalResourc
 use App\Models\Withdrawal;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class FinalizeWithdrawal
@@ -61,36 +62,38 @@ class FinalizeWithdrawal
      */
     public function finalizeTransfer(): Model|Withdrawal
     {
-        $totalAmount = $this->withdrawal->amount + $this->withdrawal->fees;
+        DB::transaction(function () {
+            $totalAmount = $this->withdrawal->amount + $this->withdrawal->fees;
 
-        $this->user->account()->lockForUpdate();
+            $this->user->account()->lockForUpdate();
 
-        $previousBalance = $this->user->account->balance;
+            $previousBalance = $this->user->account->balance;
 
-        $this->user->account->balance -= $totalAmount;
-        $this->user->account->save();
+            $this->user->account->balance -= $totalAmount;
+            $this->user->account->save();
 
-        $this->user->account->refresh();
+            $this->user->account->refresh();
 
-        $this->user->ledgers()->create([
-            'previous_balance' => $previousBalance,
-            'new_balance' => $this->user->account->balance,
-            'type' => TransactionTypesEnum::WITHDRAWAL->value,
-        ]);
+            $this->user->ledgers()->create([
+                'previous_balance' => $previousBalance,
+                'new_balance' => $this->user->account->balance,
+                'type' => TransactionTypesEnum::WITHDRAWAL->value,
+            ]);
 
-        $this->user->accountings()->create([
-            'amount' => $totalAmount,
-            'type' => TransactionTypesEnum::WITHDRAWAL->value,
-            'status' => TransactionStatusEnum::SUCCESSFUL->value,
-            'accountable_type' => Withdrawal::class,
-            'accountable_id' => $this->withdrawal->id,
-        ]);
+            $this->user->accountings()->create([
+                'amount' => $totalAmount,
+                'type' => TransactionTypesEnum::WITHDRAWAL->value,
+                'status' => TransactionStatusEnum::SUCCESSFUL->value,
+                'accountable_type' => Withdrawal::class,
+                'accountable_id' => $this->withdrawal->id,
+            ]);
 
-        $this->setActivity(ActivityTypesEnum::WITHDRAWAL_COMPLETED->value, $this->user);
+            $this->setActivity(ActivityTypesEnum::WITHDRAWAL_COMPLETED->value, $this->user);
 
-        $this->withdrawal->status = WithdrawalStatusEnum::SUCCESSFUL;
-        $this->withdrawal->provider_reference = $this->finalizeWithdrawal['reference'];
-        $this->withdrawal->save();
+            $this->withdrawal->status = WithdrawalStatusEnum::SUCCESSFUL;
+            $this->withdrawal->provider_reference = $this->finalizeWithdrawal['reference'];
+            $this->withdrawal->save();
+        });
 
         Log::info("Withdrawal completed => ", ['id' => $this->withdrawal->id]);
 

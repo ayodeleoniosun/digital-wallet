@@ -15,8 +15,10 @@ use App\Models\User;
 use App\Models\Withdrawal;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 
 class InitiateWithdrawal
@@ -28,6 +30,8 @@ class InitiateWithdrawal
     public ?string $amount;
 
     public ?string $fees;
+
+    public ?string $reason;
 
     public object $withdrawalSettings;
 
@@ -42,11 +46,15 @@ class InitiateWithdrawal
     {
         $this->user = auth()->user();
 
+        $this->amount = $request->amount;
+        $this->reason = $request->reason;
+        $key = $this->user->id.'-'.$this->amount;
+
+        $this->checkForDoubleWithdrawal($key);
+
         $this->withdrawalSettings = json_decode(Setting::where('name', 'withdraw')->value('value'));
 
         $this->fees = $this->withdrawalSettings->fee;
-
-        $this->amount = $request->amount;
 
         $totalAmount = $this->amount + $this->fees;
 
@@ -54,11 +62,24 @@ class InitiateWithdrawal
 
         $this->validateDailyWithdrawalLimit($totalAmount);
 
-        $withdrawal = $this->createWithdrawal($request->reason, $request->payment_option_id);
+        $withdrawal = $this->createWithdrawal($this->reason, $request->payment_option_id);
 
         $this->initiateTransfer();
 
+        Redis::set($key, true, 'EX', 60); //lock for 1 minute
+
         return new WithdrawalResource($withdrawal);
+    }
+
+    /**
+     * @throws CustomException
+     */
+    public function checkForDoubleWithdrawal($key): void
+    {
+        if (Redis::get($key)) {
+            throw new CustomException("Double withdrawal spotted. Try again in a minute time.",
+                Response::HTTP_TOO_MANY_REQUESTS);
+        }
     }
 
     /**
