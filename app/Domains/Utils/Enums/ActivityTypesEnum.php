@@ -13,4 +13,5 @@ enum ActivityTypesEnum: string
     case DEPOSIT_COMPLETED = 'deposit-completed';
     case PAYMENT_OPTION_CREATED = 'payment-option-created';
     case PAYMENT_OPTION_DELETED = 'payment-option-deleted';
+    case WITHDRAWAL_COMPLETED = 'withdrawal-completed';
 }

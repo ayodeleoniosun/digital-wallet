@@ -14,6 +14,11 @@ class Config
         return config('services.payment.paystack.public_key');
     }
 
+    public function preferredBank()
+    {
+        return config('services.payment.paystack.preferred_bank');
+    }
+
     public function secretKey()
     {
         return config('services.payment.paystack.secret_key');

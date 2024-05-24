@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained('users');
             $table->string('previous_balance');
             $table->string('new_balance');
+            $table->string('type');
             $table->timestamps();
             $table->softDeletes();
         });

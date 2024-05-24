@@ -36,7 +36,7 @@ class  CompleteDepositJob implements ShouldBeUnique, ShouldQueue
         public string $reference,
         public User $user,
     ) {
-        $this->expiration = 300; // 5 minutes
+        $this->expiration = 120; // 2 minutes
     }
 
     public function uniqueId(): string
@@ -71,6 +71,7 @@ class  CompleteDepositJob implements ShouldBeUnique, ShouldQueue
             $this->user->ledgers()->create([
                 'previous_balance' => $previousBalance,
                 'new_balance' => $this->user->account->balance,
+                'type' => TransactionTypesEnum::DEPOSIT->value,
             ]);
 
             $deposit = $this->user->deposits()->create([

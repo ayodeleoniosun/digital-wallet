@@ -15,8 +15,6 @@ abstract class PaymentProvider
         };
     }
 
-    abstract public function getBanks();
-
     abstract public function createVirtualBankAccount(object $data): array;
 
     abstract public function initiateTransfer(object $data): object;
@@ -24,4 +22,6 @@ abstract class PaymentProvider
     abstract public function verifyTransaction(string $reference): array;
 
     abstract public function listBanks(string $country = 'nigeria'): array;
+
+    abstract public function verifyAccountNumber(string $accountNumber, string $bankCode): array;
 }

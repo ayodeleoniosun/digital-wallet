@@ -3,7 +3,7 @@
 namespace App\Domains\Wallet\Http\Controllers;
 
 use App\Domains\Utils\Exceptions\CustomException;
-use App\Domains\Wallet\Deposit\Actions\ProcessDeposit;
+use App\Domains\Wallet\Deposit\Actions\Deposit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -17,7 +17,7 @@ class WebhookController
     {
         Log::info("Deposit webhook => ", ['request' => $request->all()]);
 
-        (new ProcessDeposit())->execute($request);
+        (new Deposit())->execute($request);
 
         return success('Deposit is being processed');
     }

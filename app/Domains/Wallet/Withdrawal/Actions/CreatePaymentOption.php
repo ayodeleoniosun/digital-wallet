@@ -2,9 +2,12 @@
 
 namespace App\Domains\Wallet\Withdrawal\Actions;
 
+use App\Domains\ThirdParty\Payment\PaymentProvider;
 use App\Domains\Utils\Enums\ActivityTypesEnum;
 use App\Domains\Utils\Exceptions\CustomException;
 use App\Domains\Utils\Traits\ActivityTrait;
+use App\Domains\Wallet\Withdrawal\Http\Requests\PaymentOptionRequest;
+use App\Models\Bank;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -19,11 +22,15 @@ class CreatePaymentOption
     /**
      * @throws CustomException
      */
-    public function execute(Request $request): Model
+    public function execute(PaymentOptionRequest $request): Model
     {
         $this->user = auth()->user();
 
         $this->validatePaymentOption($request);
+
+        $bank = Bank::where('id', $request->bank_id)->first();
+
+        $this->verifyAccountNumber($request->account_number, $bank->code);
 
         $this->setActivity(ActivityTypesEnum::PAYMENT_OPTION_CREATED->value, $this->user);
 
@@ -47,6 +54,20 @@ class CreatePaymentOption
 
         if ($optionExist) {
             throw new CustomException("Payment option already added", Response::HTTP_CONFLICT);
+        }
+    }
+
+    /**
+     * @throws CustomException
+     */
+    public function verifyAccountNumber(string $accountNumber, string $bankCode): void
+    {
+        $paymentProvider = PaymentProvider::selectProvider();
+
+        $verify = $paymentProvider->verifyAccountNumber($accountNumber, $bankCode);
+
+        if (!$verify['status']) {
+            throw new CustomException("Invalid account details. Try again.", Response::HTTP_BAD_REQUEST);
         }
     }
 }

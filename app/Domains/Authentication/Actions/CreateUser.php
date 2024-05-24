@@ -35,6 +35,6 @@ class CreateUser
 
         $this->setActivity(ActivityTypesEnum::REGISTER->value, $this->user);
 
-        return $this->user->with('profile')->first();
+        return $this->user->load('profile');
     }
 }

@@ -15,7 +15,7 @@ class BanksSeeder extends SeederOnce
     {
         $paymentProvider = PaymentProvider::selectProvider();
 
-        $banks = $paymentProvider->getBanks();
+        $banks = $paymentProvider->listBanks();
 
         foreach ($banks['data'] as $bank) {
             $bankExist = Bank::where('name', $bank['name'])->first();

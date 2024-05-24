@@ -5,7 +5,7 @@ namespace App\Domains\Wallet\Withdrawal\Http\Requests;
 use App\Domains\Utils\Traits\OverrideDefaultValidationMethodsTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
-class WithdrawRequest extends FormRequest
+class WithdrawalRequest extends FormRequest
 {
     use OverrideDefaultValidationMethodsTrait;
 
@@ -27,9 +27,9 @@ class WithdrawRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'bank_name' => ['required'],
-            'account_name' => ['required'],
-            'account_number' => ['required', 'digits:11'],
+            'currency' => ['required', 'string'],
+            'payment_option_id' => ['required', 'string'],
+            'amount' => ['required', 'string'],
         ];
     }
 }

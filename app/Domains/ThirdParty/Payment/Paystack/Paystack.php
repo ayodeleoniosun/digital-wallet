@@ -5,7 +5,6 @@ namespace App\Domains\ThirdParty\Payment\Paystack;
 use App\Domains\ThirdParty\Payment\PaymentProvider;
 use App\Domains\Utils\Exceptions\CustomException;
 use Exception;
-use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 
@@ -13,22 +12,6 @@ class Paystack extends PaymentProvider
 {
     public function __construct(public readonly Config $config = new Config())
     {
-    }
-
-    /**
-     * @throws ConnectionException
-     */
-    public function getBanks()
-    {
-        return $this->http()->get('/bank?country=nigeria')->json();
-    }
-
-    public function http(): PendingRequest
-    {
-        return Http::timeout(180)->withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer '.$this->config->secretKey(),
-        ])->baseUrl($this->config->baseUrl());
     }
 
     /**
@@ -41,7 +24,7 @@ class Paystack extends PaymentProvider
 
             return $this->http()->post('/dedicated_account', [
                 'customer' => $customer['data']['customer_code'],
-                'preferred_bank' => config('services.payment.paystack.preferred_bank'),
+                'preferred_bank' => $this->config->preferredBank(),
             ])->json();
         } catch (Exception $e) {
             throw new CustomException($e->getMessage());
@@ -60,6 +43,28 @@ class Paystack extends PaymentProvider
                 'last_name' => $data->lastname,
                 'phone' => $data->phone,
             ])->json();
+        } catch (Exception $e) {
+            throw new CustomException($e->getMessage());
+        }
+    }
+
+    public function http(): PendingRequest
+    {
+        return Http::timeout(180)->withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer '.$this->config->secretKey(),
+        ])->baseUrl($this->config->baseUrl());
+    }
+
+    /**
+     * @throws CustomException
+     */
+    public function verifyAccountNumber(string $accountNumber, string $bankCode): array
+    {
+        try {
+            $url = '/bank/resolve?account_number='.$accountNumber.'&bank_code='.$bankCode;
+            
+            return $this->http()->get($url)->json();
         } catch (Exception $e) {
             throw new CustomException($e->getMessage());
         }
@@ -87,7 +92,7 @@ class Paystack extends PaymentProvider
                 'type' => 'nuban',
                 'name' => $data->account_name,
                 'account_number' => $data->account_number,
-                'bank_code' => $data->bank_name,
+                'bank_code' => $data->bank_code,
                 'currency' => $data->currency,
             ])->json();
         } catch (Exception $e) {

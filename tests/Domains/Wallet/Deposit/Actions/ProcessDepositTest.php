@@ -7,9 +7,8 @@ use App\Domains\Utils\Enums\DepositTypesEnum;
 use App\Domains\Utils\Enums\TransactionStatusEnum;
 use App\Domains\Utils\Enums\TransactionTypesEnum;
 use App\Domains\Utils\Exceptions\CustomException;
-use App\Domains\Wallet\Deposit\Actions\ProcessDeposit;
+use App\Domains\Wallet\Deposit\Actions\Deposit;
 use App\Domains\Wallet\Deposit\Jobs\CompleteDepositJob;
-use App\Models\Deposit;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -45,13 +44,13 @@ beforeEach(function () {
 it('should throw an error if the user does not exist', function () {
     $this->request->merge(Examples::depositWebhookEvent());
 
-    (new ProcessDeposit())->execute($this->request);
+    (new Deposit())->execute($this->request);
 })->throws(CustomException::class, 'User does not exist');
 
 it('should throw an error if the status is not success', function () {
     $this->request->merge(Examples::depositWebhookEvent('error', $this->user->email));
 
-    (new ProcessDeposit())->execute($this->request);
+    (new Deposit())->execute($this->request);
 
     $this->assertDatabaseHas('activity_logs', [
         'user_id' => $this->user->id,
@@ -63,7 +62,7 @@ it('should throw an error if the status is not success', function () {
 it('should throw an error if the reference is invalid', function () {
     $this->request->merge(Examples::depositWebhookEvent('success', $this->user->email, $this->invalidReference));
 
-    (new ProcessDeposit())->execute($this->request);
+    (new Deposit())->execute($this->request);
 
     $this->assertDatabaseHas('activity_logs', [
         'user_id' => $this->user->id,
@@ -90,7 +89,7 @@ it('should throw an error in an attempt to credit the user more than once', func
         ->with($uniqueId)
         ->andReturn(true);
 
-    (new ProcessDeposit())->execute($this->request);
+    (new Deposit())->execute($this->request);
     (new CompleteDepositJob($uniqueId, $amount, $reference, $this->user))->handle();
 })->throws(CustomException::class, 'Deposit already completed');
 
@@ -112,7 +111,7 @@ it('should credit user account if he has not been previously credited', function
         ->with($uniqueId)
         ->andReturn(false);
 
-    (new ProcessDeposit())->execute($this->request);
+    (new Deposit())->execute($this->request);
 
     (new CompleteDepositJob($uniqueId, $amount, $reference, $this->user))->handle();
 
