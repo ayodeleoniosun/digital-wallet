@@ -8,6 +8,9 @@
         <testsuite name="Authentication">
             <directory>tests/Domains/Authentication</directory>
         </testsuite>
+        <testsuite name="Wallet">
+            <directory>tests/Domains/Wallet</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>

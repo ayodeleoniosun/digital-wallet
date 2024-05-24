@@ -68,6 +68,18 @@ class Paystack extends PaymentProvider
     /**
      * @throws CustomException
      */
+    public function listBanks(string $country = 'nigeria'): array
+    {
+        try {
+            return $this->http()->get('/bank?country='.$country)->json();
+        } catch (Exception $e) {
+            throw new CustomException($e->getMessage());
+        }
+    }
+
+    /**
+     * @throws CustomException
+     */
     public function createTransferRecipient(object $data): object
     {
         try {
@@ -78,6 +90,18 @@ class Paystack extends PaymentProvider
                 'bank_code' => $data->bank_name,
                 'currency' => $data->currency,
             ])->json();
+        } catch (Exception $e) {
+            throw new CustomException($e->getMessage());
+        }
+    }
+
+    /**
+     * @throws CustomException
+     */
+    public function verifyTransferRecipient(string $recipient): object
+    {
+        try {
+            return $this->http()->get('/transferrecipient/'.$recipient)->json();
         } catch (Exception $e) {
             throw new CustomException($e->getMessage());
         }

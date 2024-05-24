@@ -11,4 +11,6 @@ enum ActivityTypesEnum: string
     case INVALID_DEPOSIT_REFERENCE = 'invalid-deposit-reference';
     case DEPOSIT_ALREADY_EXIST = 'deposit-already-exist';
     case DEPOSIT_COMPLETED = 'deposit-completed';
+    case PAYMENT_OPTION_CREATED = 'payment-option-created';
+    case PAYMENT_OPTION_DELETED = 'payment-option-deleted';
 }

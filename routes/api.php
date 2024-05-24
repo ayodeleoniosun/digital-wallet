@@ -4,6 +4,7 @@ use App\Domains\Authentication\Http\Controllers\AuthController;
 use App\Domains\Wallet\Http\Controllers\TransactionController;
 use App\Domains\Wallet\Http\Controllers\WebhookController;
 use App\Domains\Wallet\VirtualAccount\Http\Controllers\VirtualAccountController;
+use App\Domains\Wallet\Withdrawal\Http\Controllers\WithdrawalController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -22,8 +23,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/', [VirtualAccountController::class, 'getAccount']);
         });
 
-        Route::prefix('transactions')->group(function () {
-            Route::get('/{type}', [TransactionController::class, 'transactions']);
+        Route::get('/transactions/{type}', [TransactionController::class, 'transactions']);
+
+        Route::prefix('withdrawals')->group(function () {
+            Route::prefix('payment-options')->group(function () {
+                Route::get('/', [WithdrawalController::class, 'getPaymentOption']);
+                Route::post('/', [WithdrawalController::class, 'createPaymentOption']);
+            });
+
+            Route::post('/', [WithdrawalController::class, 'withdraw']);
         });
     });
 });
