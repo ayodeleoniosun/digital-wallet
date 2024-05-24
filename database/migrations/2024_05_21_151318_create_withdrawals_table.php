@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('amount');
             $table->string('fees');
             $table->string('reference');
+            $table->string('provider_reference')->nullable();
             $table->string('transfer_code')->nullable();
             $table->string('reason', 50)->nullable();
             $table->smallInteger('status')->default(0);

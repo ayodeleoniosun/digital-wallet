@@ -24,6 +24,8 @@ class FinalizeWithdrawal
 
     public Withdrawal|Model $withdrawal;
 
+    public array $finalizeWithdrawal;
+
     /**
      * @throws CustomException
      */
@@ -35,13 +37,13 @@ class FinalizeWithdrawal
 
         $this->paymentProvider = PaymentProvider::selectProvider();
 
-        $finalizeWithdrawal = $this->paymentProvider->finalizeTransfer([
+        $this->finalizeWithdrawal = $this->paymentProvider->finalizeTransfer([
             'transfer_code' => $transferCode,
             'otp' => $request->otp,
         ]);
 
-        if (!$finalizeWithdrawal['status']) {
-            throw new CustomException($finalizeWithdrawal['message']);
+        if (!$this->finalizeWithdrawal['status']) {
+            throw new CustomException($this->finalizeWithdrawal['message']);
         }
 
         $this->withdrawal = Withdrawal::where('transfer_code', $transferCode)->first();
@@ -89,6 +91,7 @@ class FinalizeWithdrawal
             $this->setActivity(ActivityTypesEnum::WITHDRAWAL_COMPLETED->value, $this->user);
 
             $this->withdrawal->status = WithdrawalStatusEnum::SUCCESSFUL;
+            $this->withdrawal->provider_reference = $this->finalizeWithdrawal['reference'];
             $this->withdrawal->save();
         });
 

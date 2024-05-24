@@ -95,7 +95,7 @@ class Paystack extends PaymentProvider
                 'name' => $data->account_name,
                 'account_number' => $data->account_number,
                 'bank_code' => $data->bank_code,
-                'currency' => strtoupper($data->currency) ?? 'NGN',
+                'currency' => isset($data->currency) ? strtoupper($data->currency) : 'NGN',
             ])->json();
         } catch (Exception $e) {
             throw new CustomException($e->getMessage());
@@ -124,7 +124,7 @@ class Paystack extends PaymentProvider
     /**
      * @throws CustomException
      */
-    public function finalizeTransfer(array $data): object
+    public function finalizeTransfer(array $data): array
     {
         try {
             $data = (object) $data;

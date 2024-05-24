@@ -19,7 +19,7 @@ abstract class PaymentProvider
 
     abstract public function initiateTransfer(array $data): array;
 
-    abstract public function finalizeTransfer(array $data): object;
+    abstract public function finalizeTransfer(array $data): array;
 
     abstract public function verifyTransaction(string $reference): array;
 

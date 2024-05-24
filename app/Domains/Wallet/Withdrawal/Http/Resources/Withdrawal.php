@@ -18,12 +18,13 @@ class Withdrawal extends JsonResource
         return [
             'amount' => number_format($this->amount, 2),
             'fees' => number_format($this->fees, 2),
-            'reference' => $this->reference,
             'bank_name' => $this->bank_name,
             'bank_code' => $this->bank_code,
             'account_name' => $this->account_name,
             'account_number' => $this->account_number,
             'transfer_code' => $this->transfer_code,
+            'reference' => $this->reference,
+            'provider_reference' => $this->provider_reference,
             'withdrawn_on' => $this->parseDate($this->created_at),
         ];
     }
