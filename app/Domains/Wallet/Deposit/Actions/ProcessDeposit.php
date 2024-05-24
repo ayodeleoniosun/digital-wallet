@@ -10,6 +10,7 @@ use App\Domains\Utils\Traits\ActivityTrait;
 use App\Domains\Wallet\Deposit\Jobs\CompleteDepositJob;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class ProcessDeposit
@@ -28,7 +29,7 @@ class ProcessDeposit
         if (!$user) {
             Log::warning("User does not exist => ".$email);
 
-            throw new CustomException("User does not exist");
+            throw new CustomException("User does not exist", Response::HTTP_NOT_FOUND);
         }
 
         if ($data['status'] !== StatusTypesEnum::SUCCESS->value) {
@@ -48,7 +49,7 @@ class ProcessDeposit
         if ($verifyTransaction['status'] === 'error') {
             $this->setActivity(ActivityTypesEnum::INVALID_DEPOSIT_REFERENCE->value, $user, false);
 
-            throw new CustomException($verifyTransaction['message']);
+            throw new CustomException($verifyTransaction['message'], Response::HTTP_NOT_FOUND);
         }
 
         $uniqueId = $user->id."-".$reference;

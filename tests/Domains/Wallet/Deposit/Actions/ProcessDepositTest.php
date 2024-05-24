@@ -42,7 +42,7 @@ beforeEach(function () {
     $this->mock = Mockery::mock('overload:'.Redis::class)->makePartial();
 });
 
-it('should throw an error if the email address does not exist', function () {
+it('should throw an error if the user does not exist', function () {
     $this->request->merge(Examples::depositWebhookEvent());
 
     (new ProcessDeposit())->execute($this->request);

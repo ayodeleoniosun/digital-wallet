@@ -15,6 +15,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -43,6 +44,11 @@ class  CompleteDepositJob implements ShouldBeUnique, ShouldQueue
         return $this->uniqueId;
     }
 
+    public function middleware(): array
+    {
+        return [(new WithoutOverlapping($this->uniqueId))->releaseAfter(30)];
+    }
+
     /**
      * Execute the job.
      *
@@ -53,6 +59,8 @@ class  CompleteDepositJob implements ShouldBeUnique, ShouldQueue
         $this->validateDuplicateDeposit();
 
         DB::transaction(function () use (&$deposit) {
+            $this->user->account()->lockForUpdate();
+
             $previousBalance = $this->user->account->balance;
 
             $this->user->account->balance += $this->amount;
