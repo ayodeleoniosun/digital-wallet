@@ -1,0 +1,386 @@
+{
+	"info": {
+		"_postman_id": "01dc4024-6b74-475f-b1c4-2c94c9015be5",
+		"name": "Bumpa Wallet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18037473"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstname\" : \"Zero\",\n    \"lastname\" : \"Sum\",\n    \"email\" : \"zero@sum.com\",\n    \"password\": \"Ayodele@2024\",\n    \"phone\": \"+2348123456789\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"zero@sum.com\",\n    \"password\": \"Ayodele@2024\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wallets",
+			"item": [
+				{
+					"name": "Deposit",
+					"item": [
+						{
+							"name": "Deposit Webhook",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"event\": \"charge.success\",\n  \"data\": {\n    \"id\": 3818100787,\n    \"domain\": \"test\",\n    \"status\": \"success\",\n    \"reference\": \"171646632412210x2327jlwj7qc2i\",\n    \"amount\": 500000,\n    \"message\": null,\n    \"gateway_response\": \"Approved\",\n    \"paid_at\": \"2024-05-23T12:12:04.000Z\",\n    \"created_at\": \"2024-05-23T12:12:04.000Z\",\n    \"channel\": \"dedicated_nuban\",\n    \"currency\": \"NGN\",\n    \"ip_address\": null,\n    \"metadata\": {\n      \"receiver_account_number\": \"1238158287\",\n      \"receiver_bank\": \"Test Bank\",\n      \"custom_fields\": [\n        {\n          \"display_name\": \"Receiver Account\",\n          \"variable_name\": \"receiver_account_number\",\n          \"value\": \"1238158287\"\n        },\n        {\n          \"display_name\": \"Receiver Bank\",\n          \"variable_name\": \"receiver_bank\",\n          \"value\": \"Test Bank\"\n        }\n      ]\n    },\n    \"fees_breakdown\": null,\n    \"log\": null,\n    \"fees\": 5000,\n    \"fees_split\": null,\n    \"authorization\": {\n      \"authorization_code\": \"AUTH_radmwx9ygj\",\n      \"bin\": \"008XXX\",\n      \"last4\": \"X553\",\n      \"exp_month\": \"04\",\n      \"exp_year\": \"2024\",\n      \"channel\": \"dedicated_nuban\",\n      \"card_type\": \"transfer\",\n      \"bank\": null,\n      \"country_code\": \"NG\",\n      \"brand\": \"Managed Account\",\n      \"reusable\": false,\n      \"signature\": null,\n      \"account_name\": null,\n      \"sender_country\": \"NG\",\n      \"sender_bank\": null,\n      \"sender_bank_account_number\": \"XXXXXX4553\",\n      \"receiver_bank_account_number\": \"1238158287\",\n      \"receiver_bank\": \"Test Bank\"\n    },\n    \"customer\": {\n      \"id\": 169254362,\n      \"first_name\": \"Ayodele\",\n      \"last_name\": \"Oniosun\",\n      \"email\": \"zero@sum.com\",\n      \"customer_code\": \"CUS_ddyt0vg0hts6rqa\",\n      \"phone\": \"+2348123456789\",\n      \"metadata\": [],\n      \"risk_action\": \"default\",\n      \"international_format_phone\": \"+2348123456789\"\n    },\n    \"plan\": [],\n    \"subaccount\": [],\n    \"split\": [],\n    \"order_id\": null,\n    \"paidAt\": \"2024-05-23T12:12:04.000Z\",\n    \"requested_amount\": 500000,\n    \"pos_transaction_data\": null,\n    \"source\": null\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/webhooks/deposit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"webhooks",
+										"deposit"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Transaction History",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/wallets/transactions/deposit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"wallets",
+										"transactions",
+										"deposit"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Virtual Account",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/wallets/virtual-accounts",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"wallets",
+										"virtual-accounts"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Withdrawals",
+					"item": [
+						{
+							"name": "Payment Option",
+							"item": [
+								{
+									"name": "Create Payment Option",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "{{token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"bank_id\": \"160\",\n    \"account_name\" : \"Test\",\n    \"account_number\": \"0000000000\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/wallets/withdrawals/payment-options",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"wallets",
+												"withdrawals",
+												"payment-options"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Payment Option",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "{{token}}"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/wallets/withdrawals/payment-options",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"wallets",
+												"withdrawals",
+												"payment-options"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Withdraw",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"currency\": \"NGN\",\n    \"payment_option_id\" : \"3\",\n    \"amount\": \"100\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/wallets/withdrawals",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"wallets",
+										"withdrawals"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Finalize Transfer",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"transfer_code\" : \"TRF_geoen0hd51ryghnd\",\n    \"otp\": \"123456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/wallets/withdrawals/finalize",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"wallets",
+										"withdrawals",
+										"finalize"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Transaction History",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/wallets/transactions/deposit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"wallets",
+										"transactions",
+										"deposit"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://127.0.0.1:8000/api",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "Bearer 2|iy2URqDBPGbtoPSlI2343h52rE0vWez5H9ZJUi7Za90534f7",
+			"type": "string"
+		}
+	]
+}
