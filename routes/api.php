@@ -31,8 +31,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::post('/', [WithdrawalController::class, 'createPaymentOption']);
             });
 
-
-            Route::post('/', [WithdrawalController::class, 'withdraw'])->middleware('');
+            Route::post('/', [WithdrawalController::class, 'withdraw']);
+            Route::post('/finalize', [WithdrawalController::class, 'finalize']);
         });
     });
 });

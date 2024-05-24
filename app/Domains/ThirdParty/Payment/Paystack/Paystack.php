@@ -63,7 +63,7 @@ class Paystack extends PaymentProvider
     {
         try {
             $url = '/bank/resolve?account_number='.$accountNumber.'&bank_code='.$bankCode;
-            
+
             return $this->http()->get($url)->json();
         } catch (Exception $e) {
             throw new CustomException($e->getMessage());
@@ -85,15 +85,17 @@ class Paystack extends PaymentProvider
     /**
      * @throws CustomException
      */
-    public function createTransferRecipient(object $data): object
+    public function createTransferRecipient(array $data): array
     {
         try {
+            $data = (object) $data;
+
             return $this->http()->post('/transferrecipient', [
                 'type' => 'nuban',
                 'name' => $data->account_name,
                 'account_number' => $data->account_number,
                 'bank_code' => $data->bank_code,
-                'currency' => $data->currency,
+                'currency' => strtoupper($data->currency) ?? 'NGN',
             ])->json();
         } catch (Exception $e) {
             throw new CustomException($e->getMessage());
@@ -103,23 +105,13 @@ class Paystack extends PaymentProvider
     /**
      * @throws CustomException
      */
-    public function verifyTransferRecipient(string $recipient): object
+    public function initiateTransfer(array $data): array
     {
         try {
-            return $this->http()->get('/transferrecipient/'.$recipient)->json();
-        } catch (Exception $e) {
-            throw new CustomException($e->getMessage());
-        }
-    }
+            $data = (object) $data;
 
-    /**
-     * @throws CustomException
-     */
-    public function initiateTransfer(object $data): object
-    {
-        try {
             return $this->http()->post('/transfer', [
-                'source' => $data->source,
+                'source' => $data->source ?? 'balance',
                 'reason' => $data->reason,
                 'amount' => $data->amount,
                 'recipient' => $data->recipient_code,
@@ -132,27 +124,11 @@ class Paystack extends PaymentProvider
     /**
      * @throws CustomException
      */
-    public function charge(object $data): object
+    public function finalizeTransfer(array $data): object
     {
         try {
-            return $this->http()->post('/charge', [
-                'email' => $data->email,
-                'amount' => $data->amount,
-                'bank_transfer' => [
-                    'account_expires_at' => now()->addDays(2),
-                ],
-            ])->json();
-        } catch (Exception $e) {
-            throw new CustomException($e->getMessage());
-        }
-    }
+            $data = (object) $data;
 
-    /**
-     * @throws CustomException
-     */
-    public function finalizeTransfer(object $data): object
-    {
-        try {
             return $this->http()->post('/transfer/finalize_transfer', [
                 'transfer_code' => $data->transfer_code,
                 'otp' => $data->otp,

@@ -15,7 +15,7 @@ class DepositTransactionHistoryCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return [
-            'transactions' => DepositTransactionHistory::collection($this->items()),
+            'transactions' => Withdrawal::collection($this->items()),
             'paginations' => [
                 'current_page' => $this->currentPage(),
                 'from' => $this->firstItem(),

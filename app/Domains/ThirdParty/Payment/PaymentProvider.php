@@ -17,11 +17,15 @@ abstract class PaymentProvider
 
     abstract public function createVirtualBankAccount(object $data): array;
 
-    abstract public function initiateTransfer(object $data): object;
+    abstract public function initiateTransfer(array $data): array;
+
+    abstract public function finalizeTransfer(array $data): object;
 
     abstract public function verifyTransaction(string $reference): array;
 
     abstract public function listBanks(string $country = 'nigeria'): array;
+
+    abstract public function createTransferRecipient(array $data): array;
 
     abstract public function verifyAccountNumber(string $accountNumber, string $bankCode): array;
 }

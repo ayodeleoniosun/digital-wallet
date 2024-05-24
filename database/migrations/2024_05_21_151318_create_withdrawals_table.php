@@ -14,11 +14,14 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->string('bank_name');
+            $table->string('bank_code');
             $table->string('account_name');
             $table->string('account_number');
             $table->string('amount');
             $table->string('fees');
             $table->string('reference');
+            $table->string('transfer_code')->nullable();
+            $table->string('reason', 50)->nullable();
             $table->smallInteger('status')->default(0);
             $table->timestamps();
             $table->softDeletes();

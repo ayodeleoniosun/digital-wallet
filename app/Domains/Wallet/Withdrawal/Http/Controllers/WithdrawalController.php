@@ -5,10 +5,11 @@ namespace App\Domains\Wallet\Withdrawal\Http\Controllers;
 use App\Domains\Utils\Exceptions\CustomException;
 use App\Domains\Wallet\Withdrawal\Actions\CreatePaymentOption;
 use App\Domains\Wallet\Withdrawal\Actions\GetPaymentOption;
-use App\Domains\Wallet\Withdrawal\Actions\Withdraw;
+use App\Domains\Wallet\Withdrawal\Actions\InitiateWithdrawal;
 use App\Domains\Wallet\Withdrawal\Http\Requests\PaymentOptionRequest;
 use App\Domains\Wallet\Withdrawal\Http\Requests\WithdrawalRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class WithdrawalController
@@ -35,9 +36,19 @@ class WithdrawalController
      */
     public function withdraw(WithdrawalRequest $request): JsonResponse
     {
-        $paymentOption = (new Withdraw())->execute($request);
+        $response = (new InitiateWithdrawal())->execute($request);
 
-        return success('Bank withdrawal initiated. Your account would be credited within an hour', Response::HTTP_OK,
-            $paymentOption);
+        return success('Bank withdrawal initiated. Kindly input the 6 digits OTP sent to your mobile phone to finalize the withdrawal',
+            Response::HTTP_CREATED,
+            $response);
+    }
+
+    public function finalize(Request $request): JsonResponse
+    {
+        $response = (new InitiateWithdrawal())->execute($request);
+
+        return success('Bank withdrawal completed. You would be credited within the next 1 hour',
+            Response::HTTP_OK,
+            $response);
     }
 }

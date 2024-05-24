@@ -8,10 +8,13 @@ class GetPaymentOption
     {
         $user = auth()->user();
 
-        return tap($user->paymentOptions()->with('bank')->latest()->first(), function ($option) {
-            $option->bank_name = $option->bank->name;
+        return $user->paymentOptions()->with('bank')
+            ->latest()
+            ->get()
+            ->map(function ($option) {
+                $option->bank_name = $option->bank->name;
 
-            return $option;
-        });
+                return $option;
+            });
     }
 }

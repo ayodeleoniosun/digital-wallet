@@ -13,7 +13,7 @@ class SettingsSeeder extends SeederOnce
     public function run(): void
     {
         $settings = [
-            "withdraw" => '{"fee": 100, "withdraw_limit": 5000000, "daily_limit": 5000000}',
+            "withdraw" => '{"fee": 100, "minimum" : 100, "maximum": 5000000, "daily_limit": 5000000}',
         ];
 
         foreach ($settings as $key => $setting) {
