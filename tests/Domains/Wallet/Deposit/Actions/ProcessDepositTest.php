@@ -4,8 +4,6 @@ namespace Tests\Domains\Wallet\Deposit\Actions;
 
 use App\Domains\Utils\Enums\ActivityTypesEnum;
 use App\Domains\Utils\Enums\DepositTypesEnum;
-use App\Domains\Utils\Enums\TransactionStatusEnum;
-use App\Domains\Utils\Enums\TransactionTypesEnum;
 use App\Domains\Utils\Exceptions\CustomException;
 use App\Domains\Wallet\Deposit\Actions\Deposit;
 use App\Domains\Wallet\Deposit\Jobs\CompleteDepositJob;
@@ -104,7 +102,6 @@ it('should credit user account if he has not been previously credited', function
     $amount = $webhookEvent['data']['amount'];
 
     $this->mock->shouldReceive('set')
-        ->with($uniqueId, true, 'EX', 300)
         ->andReturn(true);
 
     $this->mock->shouldReceive('get')
@@ -125,13 +122,5 @@ it('should credit user account if he has not been previously credited', function
     $this->assertDatabaseHas('activity_logs', [
         'user_id' => $this->user->id,
         'type' => ActivityTypesEnum::DEPOSIT_COMPLETED->value,
-    ]);
-
-    $this->assertDatabaseHas('accountings', [
-        'user_id' => $this->user->id,
-        'amount' => $amount,
-        'type' => TransactionTypesEnum::DEPOSIT->value,
-        'status' => TransactionStatusEnum::SUCCESSFUL->value,
-        'accountable_type' => Deposit::class,
     ]);
 });

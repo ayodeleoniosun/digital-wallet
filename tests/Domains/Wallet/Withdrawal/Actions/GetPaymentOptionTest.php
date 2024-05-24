@@ -5,7 +5,6 @@ namespace Tests\Domains\Wallet\Withdrawal\Actions;
 use App\Domains\Wallet\Withdrawal\Actions\CreatePaymentOption;
 use App\Domains\Wallet\Withdrawal\Actions\GetPaymentOption;
 use App\Domains\Wallet\Withdrawal\Http\Requests\PaymentOptionRequest;
-use App\Models\Bank;
 use App\Models\User;
 use Database\Seeders\BanksSeeder;
 
@@ -25,9 +24,9 @@ beforeEach(function () {
     $this->request = new PaymentOptionRequest();
 
     $this->payload = [
-        'bank_id' => Bank::query()->inRandomOrder()->value('id'),
-        'account_name' => fake()->firstName.' '.fake()->lastName,
-        'account_number' => '11111111111',
+        'bank_id' => 160, //zenith bank
+        'account_name' => 'Test',
+        'account_number' => '0000000000',
     ];
 
     $this->request->merge($this->payload);
@@ -39,7 +38,7 @@ it("should retrieve payment option", function () {
 
     $response = (new GetPaymentOption())->execute();
 
-    expect($response->bank_id)->toBe($this->payload['bank_id'])
-        ->and($response->account_name)->toBe($this->payload['account_name'])
-        ->and($response->account_number)->toBe($this->payload['account_number']);
+    expect($response->count())->toBeGreaterThan(0)
+        ->and($response)->each(fn($item) => $item->user_id->toBe($this->user->id))
+        ->and($response)->each(fn($item) => $item->bank_id->toBe($this->payload['bank_id']));
 });

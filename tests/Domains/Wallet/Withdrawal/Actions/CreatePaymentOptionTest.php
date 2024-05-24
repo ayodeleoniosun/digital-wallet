@@ -6,7 +6,6 @@ use App\Domains\Utils\Enums\ActivityTypesEnum;
 use App\Domains\Utils\Exceptions\CustomException;
 use App\Domains\Wallet\Withdrawal\Actions\CreatePaymentOption;
 use App\Domains\Wallet\Withdrawal\Http\Requests\PaymentOptionRequest;
-use App\Models\Bank;
 use App\Models\User;
 use Database\Seeders\BanksSeeder;
 
@@ -26,9 +25,9 @@ beforeEach(function () {
     $this->request = new PaymentOptionRequest();
 
     $this->payload = [
-        'bank_id' => Bank::query()->inRandomOrder()->value('id'),
-        'account_name' => fake()->firstName.' '.fake()->lastName,
-        'account_number' => '11111111111',
+        'bank_id' => 160, //zenith bank
+        'account_name' => 'Test',
+        'account_number' => '0000000000',
     ];
 
     $this->request->merge($this->payload);
