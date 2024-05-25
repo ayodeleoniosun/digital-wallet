@@ -38,7 +38,7 @@ class WithdrawalRequest extends FormRequest
 
         return [
             'currency' => ['required', 'string'],
-            'payment_option_id' => ['required', 'string', Rule::in($paymentOptions)],
+            'payment_option_id' => ['required', 'integer', Rule::in($paymentOptions)],
             'reason' => ['sometimes', 'string', 'max:50'],
             'amount' => [
                 'required',
