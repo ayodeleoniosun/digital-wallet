@@ -31,7 +31,7 @@ class PaymentOptionRequest extends FormRequest
         return [
             'bank_id' => ['required', Rule::in(Bank::get()->pluck('id')->toArray())],
             'account_name' => ['required'],
-            'account_number' => ['required', 'min:10', 'max:11'],
+            'account_number' => ['required', 'min:10', 'max:11', 'unique:payment_options'],
         ];
     }
 }
