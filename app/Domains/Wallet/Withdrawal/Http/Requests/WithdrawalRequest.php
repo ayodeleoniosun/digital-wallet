@@ -5,6 +5,7 @@ namespace App\Domains\Wallet\Withdrawal\Http\Requests;
 use App\Domains\Utils\Traits\OverrideDefaultValidationMethodsTrait;
 use App\Models\Setting;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class WithdrawalRequest extends FormRequest
 {
@@ -29,11 +30,15 @@ class WithdrawalRequest extends FormRequest
      */
     public function rules(): array
     {
+        $user = auth()->user();
+
+        $paymentOptions = $user->paymentOptions()->pluck('id')->toArray();
+
         $this->withdrawalSettings = json_decode(Setting::where('name', 'withdraw')->value('value'));
 
         return [
             'currency' => ['required', 'string'],
-            'payment_option_id' => ['required', 'string'],
+            'payment_option_id' => ['required', 'string', Rule::in($paymentOptions)],
             'reason' => ['sometimes', 'string', 'max:50'],
             'amount' => [
                 'required',
@@ -49,6 +54,7 @@ class WithdrawalRequest extends FormRequest
         return [
             'amount.min' => "The minimum amount to be withdrawn is ".number_format($this->withdrawalSettings->minimum)." naira",
             'amount.max' => "The maximum amount to be withdrawn is ".number_format($this->withdrawalSettings->maximum)." naira",
+            'payment_option_id.in' => "The selected payment option is invalid",
         ];
     }
 }
