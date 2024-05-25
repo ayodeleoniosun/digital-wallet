@@ -73,5 +73,5 @@ The Postman API collection is remotely available [Here](https://documenter.getpo
 ### Testing
 
 ```bash
-./vendor/bin/pest
+php artisan test --parallel
 ```
