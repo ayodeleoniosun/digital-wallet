@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domains\Wallet\Deposit\Resources;
+namespace App\Domains\Wallet\Deposit\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -15,7 +15,7 @@ class DepositTransactionHistoryCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return [
-            'transactions' => Withdrawal::collection($this->items()),
+            'transactions' => DepositTransactionHistory::collection($this->items()),
             'paginations' => [
                 'current_page' => $this->currentPage(),
                 'from' => $this->firstItem(),

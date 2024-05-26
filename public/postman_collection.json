@@ -114,6 +114,33 @@
 							"response": []
 						},
 						{
+							"name": "Get Virtual Account",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/wallets/virtual-accounts",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"wallets",
+										"virtual-accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Transaction History",
 							"request": {
 								"method": "GET",
@@ -136,33 +163,6 @@
 										"wallets",
 										"transactions",
 										"deposit"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get Virtual Account",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "{{token}}"
-									}
-								],
-								"url": {
-									"raw": "{{baseUrl}}/wallets/virtual-accounts",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"wallets",
-										"virtual-accounts"
 									]
 								}
 							},
@@ -331,20 +331,47 @@
 									}
 								],
 								"url": {
-									"raw": "{{baseUrl}}/wallets/transactions/deposit",
+									"raw": "{{baseUrl}}/wallets/transactions/withdrawal",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"wallets",
 										"transactions",
-										"deposit"
+										"withdrawal"
 									]
 								}
 							},
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Get Balance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/wallets/balance",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"wallets",
+								"balance"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

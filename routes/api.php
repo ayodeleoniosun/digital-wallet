@@ -1,8 +1,8 @@
 <?php
 
 use App\Domains\Authentication\Http\Controllers\AuthController;
-use App\Domains\Wallet\Http\Controllers\TransactionController;
-use App\Domains\Wallet\Http\Controllers\WebhookController;
+use App\Domains\Wallet\Misc\Http\Controllers\TransactionController;
+use App\Domains\Wallet\Misc\Http\Controllers\WebhookController;
 use App\Domains\Wallet\VirtualAccount\Http\Controllers\VirtualAccountController;
 use App\Domains\Wallet\Withdrawal\Http\Controllers\WithdrawalController;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +24,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
 
         Route::get('/transactions/{type}', [TransactionController::class, 'transactions']);
+        Route::get('/balance', [TransactionController::class, 'balance']);
 
         Route::prefix('withdrawals')->group(function () {
             Route::prefix('payment-options')->group(function () {

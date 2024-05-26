@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domains\Wallet\Http\Controllers;
+namespace App\Domains\Wallet\Misc\Http\Controllers;
 
 use App\Domains\Utils\Exceptions\CustomException;
 use App\Domains\Wallet\Deposit\Actions\Deposit;
