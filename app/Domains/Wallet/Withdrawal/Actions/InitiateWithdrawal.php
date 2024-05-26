@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
 class InitiateWithdrawal
@@ -66,7 +66,7 @@ class InitiateWithdrawal
 
         $this->initiateTransfer();
 
-        Redis::set($key, true, 'EX', 60); //lock for 1 minute
+        RateLimiter::increment($key);
 
         return new WithdrawalResource($withdrawal);
     }
@@ -76,7 +76,7 @@ class InitiateWithdrawal
      */
     public function checkForDoubleWithdrawal($key): void
     {
-        if (Redis::get($key)) {
+        if (RateLimiter::tooManyAttempts($key, 1)) {
             throw new CustomException("Double withdrawal spotted. Try again in a minute time.",
                 Response::HTTP_TOO_MANY_REQUESTS);
         }

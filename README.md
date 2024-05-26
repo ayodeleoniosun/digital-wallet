@@ -1,14 +1,15 @@
 # Digital Wallet
 
-Digital Wallet is a REST API for managing deposits and withdrawals
+Digital Wallet is a REST API for managing deposits and withdrawals with Paystack being the only implemented payment
+gateway for now.
 
-# Getting Started
+Domain Driven Design principle was used for the development of this project.
 
-* Development Requirements
-* Installation
-* Starting Devevelopment Server
-* Documentation
-* Testing
+### Security checks
+
+1. Dispatching of unique jobs `CompleteDeposit` Job was used to prevent race conditions in deposits.
+2. Usage of rate limiting for preventing simultaneous multiple withdrawal requests.
+3. Usage of transaction PIN and Paystack OTP for final authorization for withdrawal requests.
 
 ## Development Requirements
 
@@ -42,8 +43,9 @@ composer install
 
 #### Step 5: Setup environment variable
 
-- Copy `.env.example` to `.env` i.e `cp .env.example .env`
-- Update all the variables as needed
+- Copy `.env.example` to `.env` i.e `cp .env.example .env` for the development environment
+  and update variables accordingly.
+- Update the variables in `.env.testing` accordingly too for your test environment.
 
 #### Step 6: Generate a new application key
 
