@@ -3,6 +3,7 @@
 namespace Tests\Domains\Wallet\Withdrawal\Actions;
 
 use App\Domains\Utils\Enums\ActivityTypesEnum;
+use App\Domains\Utils\Enums\SecurityTypesEnum;
 use App\Domains\Utils\Enums\TransactionStatusEnum;
 use App\Domains\Utils\Enums\TransactionTypesEnum;
 use App\Domains\Utils\Enums\WithdrawalStatusEnum;
@@ -16,6 +17,7 @@ use App\Models\User;
 use Database\Seeders\BanksSeeder;
 use Database\Seeders\SettingsSeeder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 
 beforeEach(function () {
@@ -33,6 +35,11 @@ beforeEach(function () {
         'bank_id' => 160, //zenith bank
         'account_name' => 'Test',
         'account_number' => '0000000000',
+    ]);
+
+    $this->transactionPin = $this->user->securities()->create([
+        'name' => SecurityTypesEnum::TRANSACTION_PIN->value,
+        'value' => Crypt::encryptString('123456'),
     ]);
 
     $this->user->account()->create([
@@ -58,10 +65,18 @@ beforeEach(function () {
     $this->finalizeTransferPayload = [
         'transfer_code' => Str::random(),
         'otp' => '123456',
+        'pin' => '123456',
     ];
 
     $this->finalizeTransferRequest->merge($this->finalizeTransferPayload);
 });
+
+it('should throw an error if transaction pin is incorrect', function () {
+    $this->finalizeTransferPayload = ['pin' => '1234566'];
+    $this->finalizeTransferRequest->merge($this->finalizeTransferPayload);
+    
+    (new FinalizeWithdrawal())->execute($this->finalizeTransferRequest);
+})->throws(CustomException::class, 'Incorrect transaction PIN.');
 
 it('should throw an error if transfer code is invalid', function () {
     (new FinalizeWithdrawal())->execute($this->finalizeTransferRequest);

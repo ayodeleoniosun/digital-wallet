@@ -7,17 +7,27 @@ use App\Domains\Wallet\Withdrawal\Actions\CreatePaymentOption;
 use App\Domains\Wallet\Withdrawal\Actions\FinalizeWithdrawal;
 use App\Domains\Wallet\Withdrawal\Actions\GetPaymentOption;
 use App\Domains\Wallet\Withdrawal\Actions\InitiateWithdrawal;
+use App\Domains\Wallet\Withdrawal\Actions\SetupTransactionPin;
+use App\Domains\Wallet\Withdrawal\Http\Requests\FinalizeWithdrawalRequest;
 use App\Domains\Wallet\Withdrawal\Http\Requests\PaymentOptionRequest;
 use App\Domains\Wallet\Withdrawal\Http\Requests\WithdrawalRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class WithdrawalController
 {
     /**
-     * @throws CustomException
+     * @throws ValidationException
      */
+    public function setupTransactionPin(Request $request): JsonResponse
+    {
+        $response = (new SetupTransactionPin())->execute($request);
+
+        return success('Transaction PIN created', Response::HTTP_CREATED, $response);
+    }
+
     public function createPaymentOption(PaymentOptionRequest $request): JsonResponse
     {
         $response = (new CreatePaymentOption())->execute($request);
@@ -47,7 +57,7 @@ class WithdrawalController
     /**
      * @throws CustomException
      */
-    public function finalize(Request $request): JsonResponse
+    public function finalize(FinalizeWithdrawalRequest $request): JsonResponse
     {
         $response = (new FinalizeWithdrawal())->execute($request);
 

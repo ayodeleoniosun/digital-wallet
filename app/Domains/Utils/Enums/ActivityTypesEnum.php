@@ -15,4 +15,5 @@ enum ActivityTypesEnum: string
     case PAYMENT_OPTION_DELETED = 'payment-option-deleted';
     case WITHDRAWAL_INITIATED = 'withdrawal-initiated';
     case WITHDRAWAL_COMPLETED = 'withdrawal-completed';
+    case TRANSACTION_PIN_SETUP = 'transaction-pin-setup';
 }

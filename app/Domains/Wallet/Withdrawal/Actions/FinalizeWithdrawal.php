@@ -4,6 +4,7 @@ namespace App\Domains\Wallet\Withdrawal\Actions;
 
 use App\Domains\ThirdParty\Payment\PaymentProvider;
 use App\Domains\Utils\Enums\ActivityTypesEnum;
+use App\Domains\Utils\Enums\SecurityTypesEnum;
 use App\Domains\Utils\Enums\TransactionStatusEnum;
 use App\Domains\Utils\Enums\TransactionTypesEnum;
 use App\Domains\Utils\Enums\WithdrawalStatusEnum;
@@ -13,6 +14,7 @@ use App\Domains\Wallet\Withdrawal\Http\Resources\Withdrawal as WithdrawalResourc
 use App\Models\Withdrawal;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -32,6 +34,8 @@ class FinalizeWithdrawal
     public function execute(Request $request): WithdrawalResource
     {
         $this->user = auth()->user();
+
+        $this->validateTransactionPIN($request->pin);
 
         $transferCode = $request->transfer_code;
 
@@ -55,6 +59,21 @@ class FinalizeWithdrawal
         $withdrawal = $this->finalizeTransfer();
 
         return new WithdrawalResource($withdrawal);
+    }
+
+    /**
+     * @throws CustomException
+     */
+    public function validateTransactionPIN(string $pin): void
+    {
+        $transactionPin = $this->user->securities()->where('name',
+            SecurityTypesEnum::TRANSACTION_PIN->value)->value('value');
+
+        $decryptedPin = Crypt::decryptString($transactionPin);
+
+        if (strcmp($pin, $decryptedPin) !== 0) {
+            throw new CustomException('Incorrect transaction PIN.');
+        }
     }
 
     /**
