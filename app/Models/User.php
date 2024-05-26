@@ -74,8 +74,7 @@ class User extends Authenticatable implements MustVerifyEmail
             get: fn() => ucwords($this->firstname.' '.$this->lastname)
         );
     }
-
-
+    
     public function deposits(): HasMany
     {
         return $this->hasMany(Deposit::class);

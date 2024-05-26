@@ -69,6 +69,10 @@ class FinalizeWithdrawal
         $transactionPin = $this->user->securities()->where('name',
             SecurityTypesEnum::TRANSACTION_PIN->value)->value('value');
 
+        if (!$transactionPin) {
+            throw new CustomException('No transaction PIN yet. Kindly setup a new one.');
+        }
+
         $decryptedPin = Crypt::decryptString($transactionPin);
 
         if (strcmp($pin, $decryptedPin) !== 0) {

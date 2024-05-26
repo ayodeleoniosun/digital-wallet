@@ -259,7 +259,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"currency\": \"NGN\",\n    \"payment_option_id\" : \"3\",\n    \"amount\": \"100\"\n}",
+									"raw": "{\n    \"currency\": \"NGN\",\n    \"payment_option_id\" : \"1\",\n    \"amount\": \"100\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -274,6 +274,43 @@
 									"path": [
 										"wallets",
 										"withdrawals"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Setup Transaction PIN",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"pin\": \"123456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/wallets/withdrawals/transaction-pin",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"wallets",
+										"withdrawals",
+										"transaction-pin"
 									]
 								}
 							},
@@ -295,7 +332,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"transfer_code\" : \"TRF_geoen0hd51ryghnd\",\n    \"otp\": \"123456\"\n}",
+									"raw": "{\n    \"transfer_code\" : \"TRF_qdkgeuszodre02ix\",\n    \"otp\": \"123456\",\n    \"pin\": \"123456\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -406,7 +443,7 @@
 		},
 		{
 			"key": "token",
-			"value": "Bearer 2|iy2URqDBPGbtoPSlI2343h52rE0vWez5H9ZJUi7Za90534f7",
+			"value": "Bearer 1|Q8Cg6I8M5JOTIpxqulKUdaxko1rwT4wzoJm7jc2ufdd202af",
 			"type": "string"
 		}
 	]

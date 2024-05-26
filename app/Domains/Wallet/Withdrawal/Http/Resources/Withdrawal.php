@@ -25,6 +25,7 @@ class Withdrawal extends JsonResource
             'transfer_code' => $this->transfer_code,
             'reference' => $this->reference,
             'provider_reference' => $this->provider_reference,
+            'status' => ucfirst($this->status),
             'withdrawn_on' => $this->parseDate($this->created_at),
         ];
     }

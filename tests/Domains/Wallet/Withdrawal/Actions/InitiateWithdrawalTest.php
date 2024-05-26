@@ -11,6 +11,7 @@ use App\Domains\Wallet\Withdrawal\Http\Resources\Withdrawal;
 use App\Models\User;
 use Database\Seeders\BanksSeeder;
 use Database\Seeders\SettingsSeeder;
+use Illuminate\Support\Facades\Redis;
 
 beforeEach(function () {
     $this->user = User::factory()->create();
@@ -72,6 +73,9 @@ it('should throw an error if double withdrawal is initiated', function () {
 })->throws(CustomException::class, 'Double withdrawal spotted. Try again in a minute time.');
 
 it('should complete withdrawal ', function () {
+    $reference = $this->user->id.'-'.$this->payload['amount'];
+    Redis::del($reference);
+    
     $response = (new InitiateWithdrawal())->execute($this->request);
 
     expect($response)->toBeInstanceOf(Withdrawal::class)
