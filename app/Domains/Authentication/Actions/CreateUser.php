@@ -17,6 +17,7 @@ class CreateUser
 
     public function execute(Request $request): User
     {
+        
         DB::transaction(function () use ($request) {
             $this->user = User::create([
                 'firstname' => $request->firstname,
